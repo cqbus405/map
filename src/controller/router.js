@@ -3,7 +3,7 @@ function setRouter(app, controllers) {
 		return res.send('<h3>Server is running!</h3>')
 	})
 
-	app.get('/search', controllers.map.search)
+	app.get('/locations', controllers.map.search)
 }
 
 module.exports = setRouter

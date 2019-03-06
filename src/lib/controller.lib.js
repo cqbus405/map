@@ -7,10 +7,8 @@ function getControllers(dir) {
 	files.forEach(file => {
 		var fileWithBasename = path.basename(file, '.js')
 		var fileWithPath = path.join(__dirname, '../controller/' + file)
-		console.log('fileWithPath: ' + fileWithPath)
 		controllers[fileWithBasename] = require(fileWithPath)
 	})
-	console.log(controllers)
 	return controllers
 }
 

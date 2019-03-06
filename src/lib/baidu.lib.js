@@ -13,7 +13,7 @@ function getCordinate(query, region, callback) {
 			return callback(error, null)
 		}
 		
-		return callback(null, body)
+		return callback(null, JSON.parse(body))
 	})
 }
 
