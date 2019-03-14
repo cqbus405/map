@@ -1,4 +1,6 @@
 var Baidu = require('../lib/baidu.lib')
+var Queue = require('../model/queue')
+var List = require('../model/list')
 
 var baidu = new Baidu()
 
@@ -8,7 +10,7 @@ exports.search = (req, res, next) => {
 	if (!place || !region) {
 		return res.json({
 			code: 60001,
-			msg: '传入参数不能为空'
+			msg: '传入参数有误'
 		})
 	}
 
@@ -26,4 +28,26 @@ exports.search = (req, res, next) => {
 			body: body
 		})
 	})
+}
+
+exports.plan = (req, res, next) => {
+	var start = req.body.start
+	var points = req.body.points
+
+	if (!start || !points || points.length < 1) {
+		return res.json({
+			code: 60001,
+			msg: '传入参数有误'
+		})
+	}
+
+	var resultQueue = new Queue()
+	resultQueue.enqueue(start)
+
+	var waitingList = new List()
+	for (var i = 0; i < points.length; ++i) {
+		waitingList.append(points[i])
+	}
+
+	
 }
