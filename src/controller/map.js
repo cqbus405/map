@@ -49,5 +49,26 @@ exports.plan = (req, res, next) => {
 		waitingList.append(points[i])
 	}
 
+	console.log(waitingList.length())
+	console.log(waitingList.currPos())
 	
+	var origin = `${start.location.lat},${start.location.lng}`
+	var destinations = ''
+
+	while (waitingList.currPos() < waitingList.length()) {
+		console.log('currPos: ' + waitingList.currPos())
+		destinations += `${waitingList.getElement().location.lat},${waitingList.getElement().location.lng}|`
+		waitingList.next()
+		if (waitingList.currPos() == 2) {
+			break
+		}
+	}
+
+	console.log('origin: ' + origin)
+	console.log('destinations: ' + destinations)
+
+	return res.json({
+		code: 200,
+		msg: 'success'
+	})
 }

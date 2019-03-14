@@ -4,6 +4,7 @@ function setRouter(app, controllers) {
 	})
 
 	app.get('/locations', controllers.map.search)
+	app.get('/plan', controllers.map.plan)
 }
 
 module.exports = setRouter
