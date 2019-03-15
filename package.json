@@ -3,7 +3,8 @@
     "express": "^4.16.4",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "web-request": "^1.0.7"
   },
   "name": "map",
   "version": "1.0.0",
