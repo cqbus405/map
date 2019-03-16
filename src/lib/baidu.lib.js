@@ -4,6 +4,7 @@ var WebRequest = require('web-request')
 function Baidu() {
 	this.getCordinate = getCordinate
 	this.getRoutes = getRoutes
+	this.getRoute = getRoute
 }
 
 function getCordinate(query, region, callback) {
@@ -22,6 +23,13 @@ function getCordinate(query, region, callback) {
 async function getRoutes(origin, destinations) {
 	var url = `http://api.map.baidu.com/routematrix/v2/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
 		+ `&origins=${origin}&destinations=${destinations}&output=json`
+	var result = await WebRequest.get(url)
+	return JSON.parse(result.body)
+}
+
+async function getRoute(origin, destination) {
+	var url = `http://api.map.baidu.com/directionlite/v1/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
+		+ `&orign=${origin}&destination=${destination}`
 	var result = await WebRequest.get(url)
 	return JSON.parse(result.body)
 }

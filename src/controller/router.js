@@ -4,7 +4,7 @@ function setRouter(app, controllers) {
 	})
 
 	app.get('/locations', controllers.map.search)
-	app.get('/plan', controllers.map.plan)
+	app.get('/routes', controllers.map.routes)
 }
 
 module.exports = setRouter

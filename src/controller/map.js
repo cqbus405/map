@@ -30,7 +30,7 @@ exports.search = (req, res, next) => {
 	})
 }
 
-exports.plan = async (req, res, next) => {
+exports.routes = async (req, res, next) => {
 	var start = req.body.start
 	var points = req.body.points
 
@@ -52,6 +52,8 @@ exports.plan = async (req, res, next) => {
 	var origin = `${start.location.lat},${start.location.lng}`
 	var destinations = ''
 
+	var frontValue = start
+
 	while (waitingList.length() > 0) {
 		for (waitingList.front(); waitingList.currPos() < waitingList.length(); waitingList.next()) {
 			destinations += `${waitingList.getElement().location.lat},${waitingList.getElement().location.lng}|`
@@ -59,29 +61,30 @@ exports.plan = async (req, res, next) => {
 		destinations = destinations.substring(0, destinations.length - 1)
 
 		var data = await baidu.getRoutes(origin, destinations)
-		var shortestTime = 0
+		var shortestRoute = 0
 		var position = 0
 
 		for (var i = 0; i < (data.result).length; ++i) {
-			var time = (data.result)[i].duration.value
+			var distance = (data.result)[i].distance.value
 			if (i == 0) {
-				shortestTime = time
+				shortestRoute = distance
 			} else {
-				if (time < shortestTime) {
-					shortestTime = time
+				if (distance < shortestRoute) {
+					shortestRoute = distance
 					position = i
 				}
 			}
 		}
 
 		var shortestValue = (waitingList.dataStore)[position]
-		var durationInfo = (data.result)[position]
-		shortestValue.durationInfo = durationInfo
+		var route = await baidu.getRoute(`${frontValue.location.lat},${frontValue.location.lng}`, `${shortestValue.location.lat},${shortestValue.location.lng}`)
+		shortestValue.route = route
 		resultQueue.enqueue(shortestValue)
 		
 		origin = `${shortestValue.location.lat},${shortestValue.location.lng}`
 		destinations = ''
 		waitingList.remove(shortestValue)
+		frontValue = shortestValue
 	}
 
 	console.log(resultQueue.toString())
