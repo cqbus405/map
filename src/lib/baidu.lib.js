@@ -22,14 +22,15 @@ function getCordinate(query, region, callback) {
 
 async function getRoutes(origin, destinations) {
 	var url = `http://api.map.baidu.com/routematrix/v2/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
-		+ `&origins=${origin}&destinations=${destinations}&output=json`
+		+ `&origins=${origin}&destinations=${destinations}&output=json&tactics=11`
 	var result = await WebRequest.get(url)
 	return JSON.parse(result.body)
 }
 
-async function getRoute(origin, destination) {
-	var url = `http://api.map.baidu.com/directionlite/v1/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
-		+ `&orign=${origin}&destination=${destination}`
+async function getRoute(origin, destination, originUid, destinationUid) {
+	var url = `http://api.map.baidu.com/direction/v2/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
+		+ `&origin=${origin}&destination=${destination}&output=json&origin_uid=${originUid}&destination_uid`
+		+ `=${destinationUid}`
 	var result = await WebRequest.get(url)
 	return JSON.parse(result.body)
 }

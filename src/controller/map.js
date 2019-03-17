@@ -42,7 +42,6 @@ exports.routes = async (req, res, next) => {
 	}
 
 	var resultQueue = new Queue()
-	resultQueue.enqueue(start)
 
 	var waitingList = new List()
 	for (var i = 0; i < points.length; ++i) {
@@ -77,9 +76,12 @@ exports.routes = async (req, res, next) => {
 		}
 
 		var shortestValue = (waitingList.dataStore)[position]
-		var route = await baidu.getRoute(`${frontValue.location.lat},${frontValue.location.lng}`, `${shortestValue.location.lat},${shortestValue.location.lng}`)
-		shortestValue.route = route
-		resultQueue.enqueue(shortestValue)
+		var originForRoute = `${frontValue.location.lat},${frontValue.location.lng}`
+		var destinationForRoute = `${shortestValue.location.lat},${shortestValue.location.lng}`
+		var originUid = frontValue.uid
+		var destinationUid = shortestValue.uid
+		var route = await baidu.getRoute(originForRoute, destinationForRoute, originUid, destinationUid)
+		resultQueue.enqueue(route.result)
 		
 		origin = `${shortestValue.location.lat},${shortestValue.location.lng}`
 		destinations = ''
@@ -87,10 +89,9 @@ exports.routes = async (req, res, next) => {
 		frontValue = shortestValue
 	}
 
-	console.log(resultQueue.toString())
-
 	return res.json({
 		code: 200,
-		msg: 'success'
+		msg: 'success',
+		data: resultQueue.dataStore
 	})
 }
