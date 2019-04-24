@@ -25,7 +25,7 @@ exports.search = (req, res, next) => {
 		return res.json({
 			code: 0,
 			msg: 'success',
-			body: body
+			data: body
 		})
 	})
 }
