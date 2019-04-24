@@ -16,7 +16,19 @@ function getCordinate(query, region, callback) {
 			return callback(error, null)
 		}
 		
-		return callback(null, JSON.parse(body))
+		var body = JSON.parse(body)
+		var status = body.status
+
+		if (status == 0) {
+			var result = body.result
+			return callback(null, result)
+		}
+
+		var message = body.message
+		return callback({
+			errcode: status,
+			errmsg: message
+		}, null)
 	})
 }
 
