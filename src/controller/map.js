@@ -53,6 +53,9 @@ exports.routes = async (req, res, next) => {
 
 	var frontValue = start
 
+	var isError = false
+	var errorMessage = 'success'
+
 	while (waitingList.length() > 0) {
 		for (waitingList.front(); waitingList.currPos() < waitingList.length(); waitingList.next()) {
 			destinations += `${waitingList.getElement().location.lat},${waitingList.getElement().location.lng}|`
@@ -62,6 +65,12 @@ exports.routes = async (req, res, next) => {
 		var data = await baidu.getRoutes(origin, destinations)
 		var shortestRoute = 0
 		var position = 0
+
+		if (data.status !== 0) {
+			isError = true
+			errorMessage = data.message
+			break
+		}
 
 		for (var i = 0; i < (data.result).length; ++i) {
 			var distance = (data.result)[i].distance.value
@@ -81,12 +90,22 @@ exports.routes = async (req, res, next) => {
 		var originUid = frontValue.uid
 		var destinationUid = shortestValue.uid
 		var route = await baidu.getRoute(originForRoute, destinationForRoute, originUid, destinationUid)
-		resultQueue.enqueue(route.result)
-		
+		var routeValue = route.result.routes[0]
+		routeValue.origin.name = frontValue.name
+		routeValue.destination.name = shortestValue.name
+		resultQueue.enqueue((route.result.routes)[0])
+
 		origin = `${shortestValue.location.lat},${shortestValue.location.lng}`
 		destinations = ''
 		waitingList.remove(shortestValue)
 		frontValue = shortestValue
+	}
+
+	if (isError) {
+		return res.json({
+			code: 1,
+			msg: errorMessage
+		})
 	}
 
 	return res.json({
