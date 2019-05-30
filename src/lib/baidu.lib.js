@@ -8,7 +8,7 @@ function Baidu() {
 }
 
 function getCordinate(query, region, callback) {
-	var url = `http://api.map.baidu.com/place/v2/suggestion?query=${encodeURIComponent(query)}&region=`
+	var url = `https://api.map.baidu.com/place/v2/suggestion?query=${encodeURIComponent(query)}&region=`
 		+ `${encodeURIComponent(region)}&cityLimit=true&output=json&ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
 	request(url, (error, response, body) => {
 		if (error) {
@@ -33,14 +33,14 @@ function getCordinate(query, region, callback) {
 }
 
 async function getRoutes(origin, destinations) {
-	var url = `http://api.map.baidu.com/routematrix/v2/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
+	var url = `https://api.map.baidu.com/routematrix/v2/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
 		+ `&origins=${origin}&destinations=${destinations}&output=json&tactics=11`
 	var result = await WebRequest.get(url)
 	return JSON.parse(result.body)
 }
 
 async function getRoute(origin, destination, originUid, destinationUid) {
-	var url = `http://api.map.baidu.com/direction/v2/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
+	var url = `https://api.map.baidu.com/direction/v2/driving?ak=6uWje97X99em2dbgGAc2wZqYZXnxFYHX`
 		+ `&origin=${origin}&destination=${destination}&output=json&origin_uid=${originUid}&destination_uid`
 		+ `=${destinationUid}`
 	var result = await WebRequest.get(url)
