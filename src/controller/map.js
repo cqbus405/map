@@ -65,9 +65,10 @@ exports.routes = async (req, res) => {
 		}
 		destinations = destinations.substring(0, destinations.length - 1)
 
+		// 算出起点分别到各目的地的距离
 		var data = await baidu.getRoutes(origin, destinations)
-		var shortestRoute = 0
-		var position = 0
+		var shortestRoute = 0	// 最短路径
+		var position = 0	// 最短路径位置
 
 		if (data.status !== 0) {
 			isError = true
@@ -75,6 +76,7 @@ exports.routes = async (req, res) => {
 			break
 		}
 
+		// 算出最短路径(可优化)
 		for (var i = 0; i < (data.result).length; ++i) {
 			var distance = (data.result)[i].distance.value
 			if (i == 0) {
@@ -87,6 +89,7 @@ exports.routes = async (req, res) => {
 			}
 		}
 
+		// 将最短路径的起点与终点进行算路，将计算得到的结果放入结果队列
 		var shortestValue = (waitingList.dataStore)[position]
 		var originForRoute = `${frontValue.location.lat},${frontValue.location.lng}`
 		var destinationForRoute = `${shortestValue.location.lat},${shortestValue.location.lng}`
@@ -98,6 +101,7 @@ exports.routes = async (req, res) => {
 		routeValue.destination.name = shortestValue.name
 		resultQueue.enqueue((route.result.routes)[0])
 
+		// 将最短路径终点设为起点并删除最短路径，计算余下的点
 		origin = `${shortestValue.location.lat},${shortestValue.location.lng}`
 		destinations = ''
 		waitingList.remove(shortestValue)
