@@ -4,7 +4,7 @@ var List = require('../model/list')
 
 var baidu = new Baidu()
 
-exports.search = (req, res, next) => {
+exports.search = (req, res) => {
 	var place = req.query.place
 	var region = req.query.region
 	if (!place || !region) {
@@ -30,7 +30,7 @@ exports.search = (req, res, next) => {
 	})
 }
 
-exports.routes = async (req, res, next) => {
+exports.routes = async (req, res) => {
 	var start = req.body.start
 	var points = req.body.points
 
@@ -113,4 +113,55 @@ exports.routes = async (req, res, next) => {
 		msg: 'success',
 		data: resultQueue.dataStore
 	})
+}
+
+exports.getPlaces = async (req, res) => {
+	var placeToSearch = req.query.place
+	var region = req.query.region
+	if (!placeToSearch || !region) {
+		res.json({
+			errcode: 1,
+			message: '无效的参数'
+		})
+	} else {
+		var getPlacesResult = await baidu.getSuggestions(placeToSearch, region)
+		var status = getPlacesResult.status
+		if (status === 0) {
+			res.json({
+				errcode: 0,
+				message: '成功',
+				data: getPlacesResult.result
+			})
+		} else {
+			res.json({
+				errcode: 2,
+				message: '获取地点列表失败 ' + status
+			})
+		}
+	}
+}
+
+exports.getPlaceDetail = async (req, res) => {
+	var uid = req.query.uid
+	if (!uid) {
+		res.json({
+			errcode: 1,
+			message: '无效的参数'
+		})
+	} else {		
+		var getPlaceDetailResult = await baidu.getDetail(uid)
+		var status = getPlaceDetailResult.status
+		if (status === 0) {
+			res.json({
+				errcode: 0,
+				message: '成功',
+				data: getPlaceDetailResult.result
+			})
+		} else {
+			res.json({
+				errcode: 2,
+				message: '获取地点详情失败 ' + status
+			})
+		}
+	}
 }
