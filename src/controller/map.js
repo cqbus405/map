@@ -33,6 +33,7 @@ exports.search = (req, res) => {
 exports.routes = async (req, res) => {
 	var start = req.body.start
 	var points = req.body.points
+	var tactics = req.body.tactics
 
 	if (!start || !points || points.length < 1) {
 		return res.json({
@@ -43,6 +44,7 @@ exports.routes = async (req, res) => {
 
 	var resultQueue = new Queue()
 
+	// 将目的地逐个加入列表
 	var waitingList = new List()
 	for (var i = 0; i < points.length; ++i) {
 		waitingList.append(points[i])
@@ -57,6 +59,7 @@ exports.routes = async (req, res) => {
 	var errorMessage = 'success'
 
 	while (waitingList.length() > 0) {
+		// 将目的地的经纬度拼接成请求需要的字符串
 		for (waitingList.front(); waitingList.currPos() < waitingList.length(); waitingList.next()) {
 			destinations += `${waitingList.getElement().location.lat},${waitingList.getElement().location.lng}|`
 		}
