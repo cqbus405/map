@@ -38,7 +38,7 @@ function getCordinate(query, region, callback) {
 
 async function getRoutes(origin, destinations) {
 	var url = `http://api.map.baidu.com/routematrix/v2/driving?ak=${ak}`
-		+ `&origins=${origin}&destinations=${destinations}&output=json&tactics=11`
+		+ `&origins=${origin}&destinations=${destinations}&output=json`
 	var result = await WebRequest.get(url)
 	return JSON.parse(result.body)
 }

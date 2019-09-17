@@ -67,8 +67,6 @@ exports.routes = async (req, res) => {
 
 		// 算出起点分别到各目的地的距离
 		var data = await baidu.getRoutes(origin, destinations)
-		var shortestRoute = 0	// 最短路径
-		var position = 0	// 最短路径位置
 
 		if (data.status !== 0) {
 			isError = true
@@ -77,15 +75,14 @@ exports.routes = async (req, res) => {
 		}
 
 		// 算出最短路径(可优化)
+		var shortestRoute = Number.POSITIVE_INFINITY	// 最短路径
+		var position = 0	// 最短路径位置
+
 		for (var i = 0; i < (data.result).length; ++i) {
 			var distance = (data.result)[i].distance.value
-			if (i == 0) {
+			if (distance < shortestRoute) {
 				shortestRoute = distance
-			} else {
-				if (distance < shortestRoute) {
-					shortestRoute = distance
-					position = i
-				}
+				position = i
 			}
 		}
 
