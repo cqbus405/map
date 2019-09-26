@@ -63,3 +63,4 @@ typings/
 # dist directory
 dist
 
+test.js

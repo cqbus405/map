@@ -1,7 +1,10 @@
 var request = require('request')
 var WebRequest = require('web-request')
+import fs from 'fs'
 
-var ak = '6uWje97X99em2dbgGAc2wZqYZXnxFYHX'
+var configStr = fs.readFileSync('config.json')
+var config = JSON.parse(configStr)
+var baiduAk = config.baiduAk
 
 function Baidu() {
 	this.getCordinate = getCordinate
@@ -13,7 +16,7 @@ function Baidu() {
 
 function getCordinate(query, region, callback) {
 	var url = `http://api.map.baidu.com/place/v2/suggestion?query=${encodeURIComponent(query)}&region=`
-		+ `${encodeURIComponent(region)}&cityLimit=true&output=json&ak=${ak}`
+		+ `${encodeURIComponent(region)}&cityLimit=true&output=json&ak=${baiduAk}`
 	request(url, (error, response, body) => {
 		if (error) {
 			console.log(error)
@@ -37,14 +40,14 @@ function getCordinate(query, region, callback) {
 }
 
 async function getRoutes(origin, destinations) {
-	var url = `http://api.map.baidu.com/routematrix/v2/driving?ak=${ak}`
+	var url = `http://api.map.baidu.com/routematrix/v2/driving?ak=${baiduAk}`
 		+ `&origins=${origin}&destinations=${destinations}&output=json`
 	var result = await WebRequest.get(url)
 	return JSON.parse(result.body)
 }
 
 async function getRoute(origin, destination, originUid, destinationUid) {
-	var url = `http://api.map.baidu.com/direction/v2/driving?ak=${ak}`
+	var url = `http://api.map.baidu.com/direction/v2/driving?ak=${baiduAk}`
 		+ `&origin=${origin}&destination=${destination}&output=json&origin_uid=${originUid}&destination_uid`
 		+ `=${destinationUid}`
 	var result = await WebRequest.get(url)
@@ -61,7 +64,7 @@ async function getRoute(origin, destination, originUid, destinationUid) {
  */
 async function getSuggestions(query, region) {
 	var url = `http://api.map.baidu.com/place/v2/suggestion?query=${encodeURIComponent(query)}&region=`
-		+ `${encodeURIComponent(region)}&city_limit=true&output=json&ak=${ak}`
+		+ `${encodeURIComponent(region)}&city_limit=true&output=json&ak=${baiduAk}`
 	var result = await WebRequest.get(url)
 	var suggestions = JSON.parse(result.body)
 	return suggestions
@@ -75,7 +78,7 @@ async function getSuggestions(query, region) {
  * @return   object                 detail 地点详情，包含省、市、区、街道、坐标等
  */
 async function getDetail(uid) {
-	var url = `http://api.map.baidu.com/place/v2/detail?uid=${uid}&output=json&scope=1&ak=${ak}`
+	var url = `http://api.map.baidu.com/place/v2/detail?uid=${uid}&output=json&scope=1&ak=${baiduAk}`
 	var result = await WebRequest.get(url)
 	var detail = JSON.parse(result.body)
 	return detail

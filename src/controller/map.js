@@ -1,4 +1,4 @@
-var Baidu = require('../lib/baidu.lib')
+var Baidu = require('../service/baidu.service')
 var Queue = require('../model/queue')
 var List = require('../model/list')
 

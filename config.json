@@ -1,0 +1,6 @@
+{
+	"baiduAk": "6uWje97X99em2dbgGAc2wZqYZXnxFYHX",
+	"elasticsearch": {
+		"node": "http://localhost:9200"
+	}
+}
