@@ -14,6 +14,7 @@ function Baidu() {
 	this.getDetail = getDetail
 }
 
+/*停止使用*/
 function getCordinate(query, region, callback) {
 	var url = `http://api.map.baidu.com/place/v2/suggestion?query=${encodeURIComponent(query)}&region=`
 		+ `${encodeURIComponent(region)}&cityLimit=true&output=json&ak=${baiduAk}`

@@ -5,6 +5,8 @@
     "express": "^4.16.4",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
+    "qiniu": "^7.2.2",
+    "redis": "^2.8.0",
     "request": "^2.88.0",
     "web-request": "^1.0.7"
   },
@@ -20,7 +22,7 @@
   },
   "scripts": {
     "start": "nodemon --exec babel-node src/app.js",
-    "test" : "nodemon --exec babel-node test.js",
+    "test": "nodemon --exec babel-node test.js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/app.js"
   },

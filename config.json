@@ -2,5 +2,15 @@
 	"baiduAk": "6uWje97X99em2dbgGAc2wZqYZXnxFYHX",
 	"elasticsearch": {
 		"node": "http://localhost:9200"
+	},
+	"qiniu": {
+		"accessKey": "BsuNs1hn2xVkjimRn74nSuWGKhe2AKXNss1kkYHo",
+		"secretKey": "xU0197uJby5M1JI_62cOqJaI_zl3FQZgWGuzkyfW",
+		"bucket": "yixiu2019",
+		"ex": ""
+	},
+	"redis": {
+		"host": "127.0.0.1",
+		"port": "6379"
 	}
 }
