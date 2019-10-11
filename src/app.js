@@ -7,7 +7,7 @@ var getControllers = require('./lib/controller.lib')
 var setRouter = require('./controller/router')
 
 var env = process.env.NODE_ENV ? process.env.NODE_ENV : 'development'
-var port = 3000
+var port = 3001
 
 var app = express()
 
