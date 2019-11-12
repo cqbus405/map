@@ -32,7 +32,7 @@ exports.search = (req, res) => {
 
 exports.routes = async (req, res) => {
 	var start = req.body.start
-	var points = req.body.points
+	var points = req.body.destinations
 	var tactics = req.body.tactics
 
 	if (!start || !points || points.length < 1) {
@@ -57,6 +57,14 @@ exports.routes = async (req, res) => {
 
 	var isError = false
 	var errorMessage = 'success'
+
+	var routes = []
+
+	var index = waitingList.length()
+
+	var pointsToReturn = []
+
+	var routesToResturn = []
 
 	while (waitingList.length() > 0) {
 		// 将目的地的经纬度拼接成请求需要的字符串
@@ -98,6 +106,31 @@ exports.routes = async (req, res) => {
 		routeValue.destination.name = shortestValue.name
 		resultQueue.enqueue((route.result.routes)[0])
 
+		var myRoute = (route.result.routes)[0]
+		var myPathes = myRoute.steps
+		var myConbinedPoints = []
+		for (var i = 0; i <myPathes.length; ++i) {
+			var myPath = myPathes[i]
+			var myPoints = myPath.path.split(';')
+			if (i === 0) {
+				myConbinedPoints = myConbinedPoints.concat(myPoints)
+			} else {
+				myConbinedPoints = myConbinedPoints.concat(myPoints.splice(1))
+			}
+		}
+
+		// 提取起点终点列表
+		if (index === waitingList.length()) {
+			pointsToReturn.push(myRoute.origin)
+			pointsToReturn.push(myRoute.destination)
+
+			routesToResturn = routesToResturn.concat(myConbinedPoints)
+		} else {
+			pointsToReturn.push(myRoute.destination)
+
+			routesToResturn = routesToResturn.concat(myConbinedPoints.splice(1))
+		}
+
 		// 将最短路径终点设为起点并删除最短路径，计算余下的点
 		origin = `${shortestValue.location.lat},${shortestValue.location.lng}`
 		destinations = ''
@@ -112,10 +145,15 @@ exports.routes = async (req, res) => {
 		})
 	}
 
+	var dataToReturn = {}
+	dataToReturn.points = pointsToReturn
+	dataToReturn.routes = resultQueue.dataStore
+	dataToReturn.steps = routesToResturn
+
 	return res.json({
 		code: 0,
 		msg: 'success',
-		data: resultQueue.dataStore
+		data: dataToReturn
 	})
 }
 
