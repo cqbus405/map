@@ -1,6 +1,7 @@
 var Baidu = require('../service/baidu.service')
 var Queue = require('../model/queue')
 var List = require('../model/list')
+var helper = require('../util/date.helper')
 
 var baidu = new Baidu()
 
@@ -35,6 +36,8 @@ exports.routes = async (req, res) => {
 	var points = req.body.destinations
 	var tactics = req.body.tactics
 
+	console.log(typeof req.body, req.body)
+
 	if (!start || !points || points.length < 1) {
 		return res.json({
 			code: 60001,
@@ -44,10 +47,17 @@ exports.routes = async (req, res) => {
 
 	var resultQueue = new Queue()
 
+	// 初始化地点名与地址为键值对的map
+	var nameAndAddressMap = {}
+	nameAndAddressMap[start.name] = start.address
+
 	// 将目的地逐个加入列表
 	var waitingList = new List()
 	for (var i = 0; i < points.length; ++i) {
-		waitingList.append(points[i])
+		var point = points[i]
+		waitingList.append(point)
+
+		nameAndAddressMap[point.name] = point.address
 	}
 	
 	var origin = `${start.location.lat},${start.location.lng}`
@@ -104,7 +114,21 @@ exports.routes = async (req, res) => {
 		var routeValue = route.result.routes[0]
 		routeValue.origin.name = frontValue.name
 		routeValue.destination.name = shortestValue.name
-		resultQueue.enqueue((route.result.routes)[0])
+
+		// 将超过1000米的距离转换成公里
+		var distance = routeValue.distance
+		if (distance.toString().length > 3) {
+			distance = (parseFloat(distance) / 1000).toFixed(1) + '公里'
+		}
+
+		var duration = routeValue.duration
+		duration = helper.formatSeconds(duration)
+
+		resultQueue.enqueue({
+			distance,
+			duration,
+			taxiFee: routeValue.taxi_fee + '元'
+		})
 
 		var myRoute = (route.result.routes)[0]
 		var myPathes = myRoute.steps
@@ -121,11 +145,14 @@ exports.routes = async (req, res) => {
 
 		// 提取起点终点列表
 		if (index === waitingList.length()) {
+			myRoute.origin.address = nameAndAddressMap[myRoute.origin.name]
+			myRoute.destination.address = nameAndAddressMap[myRoute.destination.name]
 			pointsToReturn.push(myRoute.origin)
 			pointsToReturn.push(myRoute.destination)
 
 			routesToResturn = routesToResturn.concat(myConbinedPoints)
 		} else {
+			myRoute.destination.address = nameAndAddressMap[myRoute.destination.name]
 			pointsToReturn.push(myRoute.destination)
 
 			routesToResturn = routesToResturn.concat(myConbinedPoints.splice(1))
