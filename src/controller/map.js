@@ -10,22 +10,22 @@ exports.search = (req, res) => {
 	var region = req.query.region
 	if (!place || !region) {
 		return res.json({
-			code: 60001,
-			msg: '传入参数有误'
+			errcode: 1,
+			message: '传入参数有误'
 		})
 	}
 
 	baidu.getCordinate(place, region, (error, body) => {
 		if (error) {
 			return res.json({
-				code: 50001,
-				msg: error
+				errcode: 1,
+				message: error
 			})
 		}
 
 		return res.json({
-			code: 0,
-			msg: 'success',
+			errcode: 0,
+			message: 'ok',
 			data: body
 		})
 	})
@@ -36,12 +36,10 @@ exports.routes = async (req, res) => {
 	var points = req.body.destinations
 	var tactics = req.body.tactics
 
-	console.log(typeof req.body, req.body)
-
 	if (!start || !points || points.length < 1) {
 		return res.json({
-			code: 60001,
-			msg: '传入参数有误'
+			errcode: 1,
+			message: '传入参数有误'
 		})
 	}
 
@@ -66,7 +64,7 @@ exports.routes = async (req, res) => {
 	var frontValue = start
 
 	var isError = false
-	var errorMessage = 'success'
+	var errorMessage = 'ok'
 
 	var routes = []
 
@@ -167,8 +165,8 @@ exports.routes = async (req, res) => {
 
 	if (isError) {
 		return res.json({
-			code: 1,
-			msg: errorMessage
+			errcode: 1,
+			message: errorMessage
 		})
 	}
 
@@ -178,8 +176,8 @@ exports.routes = async (req, res) => {
 	dataToReturn.steps = routesToResturn
 
 	return res.json({
-		code: 0,
-		msg: 'success',
+		errcode: 0,
+		message: 'ok',
 		data: dataToReturn
 	})
 }
@@ -198,7 +196,7 @@ exports.getPlaces = async (req, res) => {
 		if (status === 0) {
 			res.json({
 				errcode: 0,
-				message: '成功',
+				message: 'ok',
 				data: getPlacesResult.result
 			})
 		} else {
@@ -223,12 +221,12 @@ exports.getPlaceDetail = async (req, res) => {
 		if (status === 0) {
 			res.json({
 				errcode: 0,
-				message: '成功',
+				message: 'ok',
 				data: getPlaceDetailResult.result
 			})
 		} else {
 			res.json({
-				errcode: 2,
+				errcode: 1,
 				message: '获取地点详情失败 ' + status
 			})
 		}

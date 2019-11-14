@@ -1,4 +1,5 @@
 require('@babel/polyfill')
+var moment = require('moment')
 
 var express = require('express')
 var bodyParser = require('body-parser')
@@ -24,6 +25,12 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: false
 }))
+
+// 打印请求url
+app.use(function(req, res, next) {
+	console.log(`[INFO]${moment().format('YYYY-MM-DD HH:mm:ss')} ${req.method} ${req.originalUrl}`)
+	next()
+})
 
 var controllers = getControllers(path.join(__dirname, './controller'))
 setRouter(app, controllers)
