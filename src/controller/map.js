@@ -36,7 +36,7 @@ exports.routes = async (req, res) => {
 	var points = req.body.destinations
 	var tactics = req.body.tactics
 
-	if (!start || !points || points.length < 1) {
+	if (!start || !points || points.length < 1 || JSON.stringify(start) === '{}') {
 		return res.json({
 			errcode: 1,
 			message: '传入参数有误'
